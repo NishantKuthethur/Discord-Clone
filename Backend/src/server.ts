@@ -1,8 +1,8 @@
 import express, { Express, Request, Response , Application } from 'express';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import http from 'http';
 import cors from 'cors';
+import connectDB from './config/database';
+
 //For env File 
 dotenv.config();
 
@@ -13,6 +13,18 @@ app.use(express.json());
 app.use(cors());
 
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.get('/health', (req: Request, res: Response) => {
+  // Optionally include additional checks (like database connectivity, etc.)
+  res.send('OK');
 });
+
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+  }).catch((error) => {
+    console.error('Database Connection Failed ', error);
+  });
+
+
+
