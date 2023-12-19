@@ -11,7 +11,12 @@ const connectDB = async () : Promise<void> => {
     }
 
     try{
-        await mongoose.connect(dbUri);
+        await mongoose.connect(dbUri,{ 
+            maxIdleTimeMS: 80000,
+            serverSelectionTimeoutMS: 80000,
+            socketTimeoutMS: 0,
+            connectTimeoutMS: 0
+            });
         console.log("Database connected successfully");
     }catch(error){
         console.error('Database connection failed', error);

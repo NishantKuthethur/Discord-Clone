@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/database';
 
+//imports custom files
+import authRouter from './routes/auth/authRoutes'
+
 //For env File 
 dotenv.config();
 
@@ -12,6 +15,8 @@ const port = process.env.PORT || process.env.API_PORT;
 app.use(express.json());
 app.use(cors());
 
+//Register the routes
+app.use('/api/auth', authRouter);
 
 app.get('/health', (req: Request, res: Response) => {
   // Optionally include additional checks (like database connectivity, etc.)
