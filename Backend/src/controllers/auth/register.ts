@@ -1,10 +1,18 @@
 import { Request, Response} from 'express';
 import User from '../../models/schemas/auth/userSchema';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+interface RegisterRequest {
+    email: string;
+    username: string;
+    password: string;
+}
+
+const SALT_ROUNDS = 10;
 
 const register = async (req: Request, res: Response) => {
     try{
-        const { email, username, password } = req.body;
+        const { email, username, password } = req.body as RegisterRequest;
 
         //Check if user exists
         const userExists = await User.exists({ email: email.toLowerCase() })
@@ -14,7 +22,7 @@ const register = async (req: Request, res: Response) => {
         }
 
         //Hash the password
-        const encryptedPassword = await bcrypt.hash(password, 10);
+        const encryptedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
         //Create user
         const user = await User.create({
@@ -23,8 +31,15 @@ const register = async (req: Request, res: Response) => {
             password: encryptedPassword
         });
 
-        //create JWT token
-        const token = "Token";
+        //TODO: Replace with actual JWT token creation logic
+        const token = jwt.sign(
+            {
+            userId: user._id,
+            email
+            },
+            process.env.TOKEN_KEY!,
+            { expiresIn: "24h" }
+        );
 
         res.status(200).json({
             userDetails:{

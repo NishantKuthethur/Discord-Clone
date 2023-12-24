@@ -3,6 +3,7 @@ import Joi from 'joi'
 import { createValidator } from 'express-joi-validation';
 //custom imports
 import {login, register} from '../../controllers/auth/authController'
+import verifyToken from '../../middleware/auth/auth';
 
 const validator = createValidator({});
 
@@ -24,5 +25,10 @@ const router = Router();
 router.post('/register',validator.body(registrationSchema), register);
 
 router.post('/login',validator.body(loginSchema), login);
+
+//test route to verify if middleware is working
+router.get('/test', verifyToken, (req: Request, res: Response) => {
+    res.send("request passed");
+} )
 
 export default router;
