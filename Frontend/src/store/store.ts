@@ -1,7 +1,18 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
+import {
+  configureStore,
+  combineReducers,
+  ThunkAction,
+  Action,
+} from "@reduxjs/toolkit"
+
+import authReducer from "./reducers/authReducer"
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+})
 
 export const store = configureStore({
-  reducer: {},
+  reducer: rootReducer,
 })
 
 export type AppDispatch = typeof store.dispatch
