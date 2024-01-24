@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Header from "./Header"
 import { TextField, Button, Link, Typography } from "@mui/material"
+import { useNavigate, Link as RouterLink } from "react-router-dom"
 //import Button from "../../../shared/components/UI/Button"
 
 interface FormField {
@@ -28,6 +29,8 @@ const LoginForm = () => {
     },
   })
 
+  const navigate = useNavigate()
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormValues((prevValues) => ({
@@ -35,28 +38,66 @@ const LoginForm = () => {
       [name]: {
         ...prevValues[name as keyof FormValues],
         value,
+        error: false,
       },
     }))
     console.log(name, value)
   }
 
+  const validate = () => {
+    const formFields = Object.keys(formValues) as (keyof FormValues)[]
+    let newFormValues = { ...formValues }
+    let isValid = true
+    for (let index = 0; index < formFields.length; index++) {
+      const currentField = formFields[index]
+      const currentValue = formValues[currentField].value
+
+      if (currentValue === "") {
+        newFormValues = {
+          ...newFormValues,
+          [currentField]: {
+            ...newFormValues[currentField],
+            error: true,
+          },
+        }
+        isValid = false
+      }
+    }
+
+    setFormValues(newFormValues)
+    return isValid
+  }
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log("logging in")
+    if (!validate()) {
+      return
+    }
+    // TODO: implement login functionality here
+    navigate("/dashboard")
   }
 
+  // const handleNavigation = (path: string) => {
+  //   navigate(path)
+  // }
+
   return (
-    <form className="login-form" onSubmit={handleLogin}>
+    <form className="login-form" method="post" onSubmit={handleLogin}>
       <Header />
       <TextField
         name="email"
         label="Email"
+        type="email"
         variant="outlined"
         sx={{ width: "100%" }}
         value={formValues.email.value}
         onChange={handleChange}
         error={formValues.email.error}
         helperText={formValues.email.error ? formValues.email.errorMessage : ""}
+        inputProps={{
+          autoComplete: "new-password",
+        }}
       />
       <TextField
         name="password"
@@ -71,7 +112,15 @@ const LoginForm = () => {
           formValues.password.error ? formValues.password.errorMessage : ""
         }
       />
-      <Link style={{ cursor: "crosshair", color: "#00a8fc" }} underline="hover">
+      <Link
+        sx={{
+          cursor: "pointer",
+          color: "#5865F2",
+          marginTop: "-10px",
+          fontSize: "13px",
+        }}
+        underline="hover"
+      >
         Forgot your Password?
       </Link>
       <Button
@@ -90,8 +139,10 @@ const LoginForm = () => {
       <div className="register-link">
         <Typography sx={{ color: "#949ba4" }}>Need an account?</Typography>
         <Link
-          style={{ cursor: "crosshair", color: "#00a8fc" }}
+          sx={{ cursor: "pointer", color: "#5865F2" }}
           underline="hover"
+          component={RouterLink}
+          to={"/register"}
         >
           Register
         </Link>

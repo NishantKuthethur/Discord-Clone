@@ -8,7 +8,7 @@ const LazyQRImage = React.lazy(() => import("./LazyQRImage"))
 const QRComponent = () => {
   return (
     <div className="qr-container">
-      <Suspense fallback={<CircularProgress />}>
+      <Suspense fallback={<CircularProgress sx={{ margin: "8px" }} />}>
         <LazyQRImage src={githubSVG} alt="QR Code" />
       </Suspense>
       <Typography

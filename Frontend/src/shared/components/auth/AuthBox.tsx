@@ -23,8 +23,8 @@ const BoxWrapper = styled("div")({
 
 const AuthBox = ({ type, children }: AuthBoxProps) => {
   const boxStyle = {
-    width: type === AuthType.login ? 784 : 480,
-    height: type === AuthType.login ? 408 : 686, // Example of conditional height
+    width: type === AuthType.login ? "fit" : 480,
+    height: type === AuthType.login ? "fit" : 686, // Example of conditional height
     bgcolor: "#313338",
     borderRadius: "5px",
     boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
